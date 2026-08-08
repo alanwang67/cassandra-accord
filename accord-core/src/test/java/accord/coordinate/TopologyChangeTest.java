@@ -18,6 +18,7 @@
 
 package accord.coordinate;
 
+import accord.api.ProtocolModifiers;
 import accord.impl.mock.MockCluster;
 import accord.impl.mock.MockTopologyService;
 import accord.local.Command;
@@ -240,11 +241,12 @@ public class TopologyChangeTest
     @Test
     void lostBarrierTest()
     {
+        ProtocolModifiers.Configure.setPermitLocalDelivery(false);
         Keys keys = keys(150);
         Range range = range(100, 200);
         Topology topology1 = topology(1, shard(range, idList(1, 2, 3), idSet(1, 2)));
         Topology topology2 = topology(2, shard(range, idList(2, 3, 4), idSet(2, 3)));
-        Topology topology3 = topology(3, shard(range, idList(3, 4, 5), idSet(3, 4)));
+
         try (MockCluster cluster = MockCluster.builder()
                 .nodes(5)
                 .topology(topology1)
@@ -255,7 +257,7 @@ public class TopologyChangeTest
             cluster.networkFilter.addFilter(Predicates.alwaysTrue(), to -> id(4).equals(to), TopologyChangeTest::isExclSyncPoint);
 
             cluster.nodes(1, 2, 3, 4, 5).forEach(node -> node.topology().reportTopology(topology2));
-            cluster.nodes(   4).forEach(node -> {
+            cluster.nodes(4).forEach(node -> {
                 getUncheckedTimeout(node.topology().await(2, null), 5, TimeUnit.SECONDS);
                 MockTopologyService topologyService = (MockTopologyService) node.topology().topologyService();
                 try
