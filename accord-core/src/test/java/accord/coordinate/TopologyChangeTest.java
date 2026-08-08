@@ -52,6 +52,11 @@ import static accord.utils.async.AsyncChainUtils.getUninterruptibly;
 
 public class TopologyChangeTest
 {
+    static
+    {
+        ProtocolModifiers.Configure.setPermitLocalDelivery(false);
+    }
+
     @Test
     void disjointElectorate() throws Throwable
     {
@@ -241,7 +246,6 @@ public class TopologyChangeTest
     @Test
     void lostBarrierTest()
     {
-        ProtocolModifiers.Configure.setPermitLocalDelivery(false);
         Keys keys = keys(150);
         Range range = range(100, 200);
         Topology topology1 = topology(1, shard(range, idList(1, 2, 3), idSet(1, 2)));
