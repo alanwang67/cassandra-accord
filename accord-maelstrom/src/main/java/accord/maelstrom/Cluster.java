@@ -391,20 +391,20 @@ public class Cluster implements Scheduler
     {
         @Override public void open(Node node) { }
         @Override public void start(Node node) { }
-        @Override public Command loadCommand(int store, TxnId txnId, RedundantBefore redundantBefore, DurableBefore durableBefore) { throw new IllegalStateException("Not impelemented"); }
-        @Override public MinimalCommand loadMinimal(int commandStoreId, TxnId txnId, RedundantBefore redundantBefore, DurableBefore durableBefore) { throw new IllegalStateException("Not impelemented"); }
-        @Override public MinimalCommand.MinimalWithDeps loadMinimalWithDeps(int store, TxnId txnId, RedundantBefore redundantBefore, DurableBefore durableBefore) { throw new IllegalStateException("Not impelemented"); }
-        @Override public void saveCommand(int store, CommandUpdate value, Runnable onFlush)  { throw new IllegalStateException("Not impelemented"); }
-        @Override public List<TopologyUpdate> loadTopologies() { throw new IllegalStateException("Not impelemented"); }
-        @Override public void saveTopology(TopologyUpdate topologyUpdate, Runnable onFlush)  { throw new IllegalStateException("Not impelemented"); }
-        @Override public void purge(CommandStores commandStores, EpochSupplier minEpoch)  { throw new IllegalStateException("Not impelemented"); }
-        @Override public boolean replay(CommandStores commandStores, Object param)  { throw new IllegalStateException("Not impelemented"); }
-        @Override public RedundantBefore loadRedundantBefore(int store) { throw new IllegalStateException("Not impelemented"); }
-        @Override public NavigableMap<TxnId, Ranges> loadBootstrapBeganAt(int store) { throw new IllegalStateException("Not impelemented"); }
-        @Override public NavigableMap<Timestamp, Ranges> loadSafeToRead(int store) { throw new IllegalStateException("Not impelemented"); }
-        @Override public CommandStores.RangesForEpoch loadRangesForEpoch(int store) { throw new IllegalStateException("Not impelemented"); }
+        @Override public Command loadCommand(int store, TxnId txnId, RedundantBefore redundantBefore, DurableBefore durableBefore) { throw new IllegalStateException("Not implemented"); }
+        @Override public MinimalCommand loadMinimal(int commandStoreId, TxnId txnId, RedundantBefore redundantBefore, DurableBefore durableBefore) { throw new IllegalStateException("Not implemented"); }
+        @Override public MinimalCommand.MinimalWithDeps loadMinimalWithDeps(int store, TxnId txnId, RedundantBefore redundantBefore, DurableBefore durableBefore) { throw new IllegalStateException("Not implemented"); }
+        @Override public void saveCommand(int store, CommandUpdate value, Runnable onFlush)  { throw new IllegalStateException("Not implemented"); }
+        @Override public List<TopologyUpdate> loadTopologies() { throw new IllegalStateException("Not implemented"); }
+        @Override public void saveTopology(TopologyUpdate topologyUpdate, Runnable onFlush)  { throw new IllegalStateException("Not implemented"); }
+        @Override public void purge(CommandStores commandStores, EpochSupplier minEpoch)  { throw new IllegalStateException("Not implemented"); }
+        @Override public boolean replay(CommandStores commandStores, Object param)  { throw new IllegalStateException("Not implemented"); }
+        @Override public RedundantBefore loadRedundantBefore(int store) { throw new IllegalStateException("Not implemented"); }
+        @Override public NavigableMap<TxnId, Ranges> loadBootstrapBeganAt(int store) { throw new IllegalStateException("Not implemented"); }
+        @Override public NavigableMap<Timestamp, Ranges> loadSafeToRead(int store) { throw new IllegalStateException("Not implemented"); }
+        @Override public CommandStores.RangesForEpoch loadRangesForEpoch(int store) { throw new IllegalStateException("Not implemented"); }
         @Override public Ranges loadPermanentlyUnsafeToRead(int store) { throw new IllegalStateException("Not implemented"); }
-        @Override public PersistentField.Persister<DurableBefore, DurableBefore> durableBeforePersister() { throw new IllegalStateException("Not impelemented"); }
-        @Override public void saveStoreState(int store, FieldUpdates fieldUpdates, Runnable onFlush)  { throw new IllegalStateException("Not impelemented"); }
+        @Override public PersistentField.Persister<DurableBefore, DurableBefore> durableBeforePersister() { throw new IllegalStateException("Not implemented"); }
+        @Override public void saveStoreState(int store, FieldUpdates fieldUpdates, Runnable onFlush)  { throw new IllegalStateException("Not implemented"); }
     }
 }
