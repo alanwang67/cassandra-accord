@@ -40,7 +40,7 @@ public class BurnTest extends BurnTestBase
     public static void main(String[] args)
     {
         int count = 1;
-        int operations = 1000;
+        int operations = 10000;
         boolean reconcile = false;
         LongStream seeds = LongStream.generate(ThreadLocalRandom.current()::nextLong);
         File recordDir = null;

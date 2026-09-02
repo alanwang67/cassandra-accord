@@ -183,6 +183,10 @@ public class CommandChange
     public static abstract class Builder
     {
         protected final int mask;
+        /**
+         * Bits 0-15 are used to determine if a field is null
+         * Bits 16-31 are used to determine if a field has changed
+         * */
         protected int flags;
 
         protected TxnId txnId;
@@ -765,9 +769,8 @@ public class CommandChange
     }
 
     /**
-     * Managing masks
+     * Managing masks, set bit to 0 as field if we are including the value
      */
-
     public static int mask(Field... fields)
     {
         int mask = -1;
