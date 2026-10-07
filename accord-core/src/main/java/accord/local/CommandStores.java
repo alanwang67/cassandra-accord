@@ -41,6 +41,7 @@ import org.slf4j.LoggerFactory;
 import accord.api.Agent;
 import accord.api.AsyncExecutorFactory;
 import accord.api.AsyncExecutor;
+import accord.api.ExclusiveAsyncExecutor;
 import accord.api.VisibleForImplementation;
 import accord.topology.EpochReady;
 import accord.api.DataStore;
@@ -967,7 +968,7 @@ public abstract class CommandStores implements AsyncExecutorFactory
                 RangesForEpoch rangesForEpoch = new RangesForEpoch(epoch, addRanges);
                 ShardHolder shard = new ShardHolder(supplier.create(nextId++, rangesForEpoch), previouslyOwned.regains(addRanges));
                 shard.ranges = rangesForEpoch;
-                bootstrapUpdates.add(() -> EpochReady.all(epoch, shard.store.execute((PreLoadContext.Empty)() -> "Saving RangesForEpoch to journal for " + shard.store, safeStore -> {
+                bootstrapUpdates.add(() -> EpochReady.all(epoch, shard.store.execute((ExecutionContext.Empty)() -> "Saving RangesForEpoch to journal for " + shard.store, safeStore -> {
                     safeStore.setRangesForEpoch(rangesForEpoch); // to persist it
                 })));
 
@@ -1067,15 +1068,15 @@ public abstract class CommandStores implements AsyncExecutorFactory
 
     public AsyncChain<Void> forEach(String reason, TxnId txnId, Participants<?> participants, long minEpoch, long maxEpoch, Consumer<SafeCommandStore> forEach)
     {
-        return forEach(reason, txnId, participants, LoadKeys.SYNC, LoadKeysFor.READ_WRITE,  minEpoch, maxEpoch, forEach);
+        return forEach(reason, txnId, participants, LoadKeys.SYNC, FindKeys.CONFLICTS, minEpoch, maxEpoch, forEach);
     }
 
-    public AsyncChain<Void> forEach(String reason, TxnId txnId, Participants<?> participants, LoadKeys loadKeys, LoadKeysFor loadKeysFor, long minEpoch, long maxEpoch, Consumer<SafeCommandStore> forEach)
+    public AsyncChain<Void> forEach(String reason, TxnId txnId, Participants<?> participants, LoadKeys loadKeys, FindKeys findKeys, long minEpoch, long maxEpoch, Consumer<SafeCommandStore> forEach)
     {
         return mapReduce(StoreFinder.selector(participants, minEpoch, maxEpoch), new MapReduceCommandStores<Participants<?>, Void>(participants)
         {
             @Override public LoadKeys loadKeys() { return loadKeys;}
-            @Override public LoadKeysFor loadKeysFor() { return loadKeysFor; }
+            @Override public FindKeys findKeys() { return findKeys; }
             @Override public Void reduce(Void o1, Void o2) { return null; }
             @Override public TxnId primaryTxnId() { return txnId; }
             @Override public String reason() { return reason; }
@@ -1278,11 +1279,11 @@ public abstract class CommandStores implements AsyncExecutorFactory
     @Override
     public AsyncExecutor someExecutor()
     {
-        return someSequentialExecutor();
+        return someExclusiveExecutor();
     }
 
     @Override
-    public SequentialAsyncExecutor someSequentialExecutor()
+    public ExclusiveAsyncExecutor someExclusiveExecutor()
     {
         return any();
     }

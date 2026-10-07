@@ -35,6 +35,7 @@ import accord.local.Command;
 import accord.local.Command.Committed;
 import accord.local.CommandStore;
 import accord.local.CommandStores;
+import accord.local.LoadKeys;
 import accord.local.Node;
 import accord.local.SafeCommand;
 import accord.local.SafeCommandStore;
@@ -209,6 +210,11 @@ public abstract class ReadData extends AbstractRequest<Participants<?>, ReadData
     protected long minEpoch()
     {
         return executeAtEpoch;
+    }
+
+    public ExecutionKind executionKind()
+    {
+        return ExecutionKind.STABLE;
     }
 
     @Override
@@ -475,7 +481,7 @@ public abstract class ReadData extends AbstractRequest<Participants<?>, ReadData
         return unavailable(txnId, executeAt, scope, unsafeStore.unsafeGetRangesForEpoch(), unsafeStore.unsafeGetSafeToRead());
     }
 
-    static Ranges unavailable(TxnId txnId, Timestamp executeAt, Participants<?> scope, CommandStores.RangesForEpoch ranges, NavigableMap<Timestamp, Ranges> safeToReadAt)
+    public static Ranges unavailable(TxnId txnId, Timestamp executeAt, Participants<?> scope, CommandStores.RangesForEpoch ranges, NavigableMap<Timestamp, Ranges> safeToReadAt)
     {
         // note: syncpoints and ephemeral reads simply consume the latest information (whatever it is),
         //  which is represented by the latest possible safeToRead entry (which is only updated on successful bootstrap)
@@ -730,14 +736,6 @@ public abstract class ReadData extends AbstractRequest<Participants<?>, ReadData
         {
             reply(failReply, null);
         }
-    }
-
-    @Override
-    public Unseekables<?> keys()
-    {
-        if (flags.contains(READY_TO_EXECUTE) && fastReadsMayBypassCommandsForKey(txnId))
-            return RoutingKeys.EMPTY;
-        return scope;
     }
 
     protected void reply(Ranges unavailable, Data data, long uniqueHlc)

@@ -32,7 +32,7 @@ import accord.coordinate.CoordinationAdapter.Adapters;
 import accord.coordinate.CoordinationAdapter.Adapters.SyncPointAdapter;
 import accord.coordinate.ExecuteFlag.ExecuteFlags;
 import accord.local.Node;
-import accord.local.SequentialAsyncExecutor;
+import accord.api.ExclusiveAsyncExecutor;
 import accord.messages.Accept;
 import accord.messages.Apply;
 import accord.messages.PreAccept.PreAcceptOk;
@@ -78,7 +78,7 @@ public class CoordinateSyncPoint<R> extends CoordinatePreAccept<R>
 
     final CoordinationAdapter<R> adapter;
 
-    private CoordinateSyncPoint(Node node, SequentialAsyncExecutor executor, TxnId txnId, Topologies topologies, Txn txn, FullRoute<?> route, SyncPointAdapter<R> adapter, BiConsumer<? super R, Throwable> callback)
+    private CoordinateSyncPoint(Node node, ExclusiveAsyncExecutor executor, TxnId txnId, Topologies topologies, Txn txn, FullRoute<?> route, SyncPointAdapter<R> adapter, BiConsumer<? super R, Throwable> callback)
     {
         super(node, executor, txnId, txn, route, topologies, adapter.preacceptTrackerFactory, callback);
         this.adapter = adapter;
@@ -117,7 +117,7 @@ public class CoordinateSyncPoint<R> extends CoordinatePreAccept<R>
                         FullRoute<Range> route = (FullRoute<Range>) node.computeRoute(txnId, ranges);
                         Txn txn = node.agent().emptySystemTxn(txnId.kind(), txnId.domain());
                         Topologies topologies = adapter.forDecision(node, route, txnId, txnId);
-                        coordinate = new CoordinateSyncPoint<>(node, node.someSequentialExecutor(), txnId, topologies, txn, route, adapter, callback);
+                        coordinate = new CoordinateSyncPoint<>(node, node.someExclusiveExecutor(), txnId, topologies, txn, route, adapter, callback);
                     }
                     catch (Throwable t)
                     {
@@ -169,7 +169,7 @@ public class CoordinateSyncPoint<R> extends CoordinatePreAccept<R>
             if (tracker.hasMediumPathAccepted() && txnId.hasMediumPath())
                 adapter.propose(node, executor, topologies, scope, Accept.Kind.MEDIUM, Ballot.ZERO, txnId, txn, withFlags, deps, finishAndTakeCallback());
             else
-                adapter.propose(node, executor, topologies, scope, Accept.Kind.SLOW, Ballot.ZERO, txnId, txn, executeAt, deps, finishAndTakeCallback());
+                adapter.propose(node, executor, topologies, scope, Accept.Kind.SLOW, Ballot.ZERO, txnId, txn, txnId, deps, finishAndTakeCallback());
         }
     }
 

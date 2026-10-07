@@ -16,17 +16,8 @@
  * limitations under the License.
  */
 
-package accord.impl;
+package accord.utils.async;
 
-/**
- * State scoped to a single request that references global state
- */
-public interface SafeState<T>
+public interface CancellableAsyncResult<V> extends AsyncResult<V>, Cancellable
 {
-    T current();
-
-    default boolean isUnset()
-    {
-        return current() == null;
-    }
 }

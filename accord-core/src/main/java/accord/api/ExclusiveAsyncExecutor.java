@@ -18,8 +18,9 @@
 
 package accord.api;
 
-public interface AsyncExecutorFactory
+/**
+ * A single-threaded AsyncExecutor
+ */
+public interface ExclusiveAsyncExecutor extends AsyncExecutor
 {
-    AsyncExecutor someExecutor();
-    ExclusiveAsyncExecutor someExclusiveExecutor();
 }
