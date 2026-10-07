@@ -775,7 +775,7 @@ public class CommandChange
     {
         int mask = -1;
         for (Field field : fields)
-            mask &= ~(1 << field.ordinal());
+            mask &= ~(0x10000 << field.ordinal());
         return mask;
     }
 
