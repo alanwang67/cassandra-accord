@@ -966,7 +966,7 @@ public class InMemoryJournal implements Journal
 
                 // Since we are iterating in reverse order, we skip the fields that were
                 // set by entries writer later (i.e. already read ones).
-                if (isChanged(field, this.flags) || isNull(field, mask))
+                if (isChanged(field, this.flags | mask))
                 {
                     iterable = unsetIterable(field, iterable);
                     if (field != CLEANUP || !isChanged(field, diff.flags))
